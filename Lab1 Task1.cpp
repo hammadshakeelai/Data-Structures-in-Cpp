@@ -21,7 +21,7 @@ int main(){
     cout<<"Latte ("<<*ptr2<<" x 250) = "<<*ptr2*250<<endl;
     cout<<"Cappuccino ("<<*ptr3<<" x 300) = "<<*ptr3*300<<endl;
     cout<<"\n-----------------------";
-    cout<<"Total Bill : "<<((*ptr1)*200)+((*ptr2)*250)+((*ptr3)*300)<<endl;
+    cout<<"\nTotal Bill : "<<((*ptr1)*200)+((*ptr2)*250)+((*ptr3)*300)<<endl;
     //---------------------------------------------------------------
     auto end = high_resolution_clock::now();     // end time
     auto duration = duration_cast<milliseconds>(end - start);
