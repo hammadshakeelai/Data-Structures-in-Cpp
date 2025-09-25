@@ -25,7 +25,7 @@ int main(){
 	//---------------------------------------------------------------
 	int (*codePtr)(int)=&generateCode;
 	int code;
-	cout<<"Enter Secret Code: ";
+	cout<<"Enter A Number: ";
 	cin>>code;
 	if(code!=0){
 		cout<<"Your Secret Code is: ";
