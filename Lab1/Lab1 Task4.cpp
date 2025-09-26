@@ -17,6 +17,10 @@ int main(){
 	for(int i=0;i<NumberOfP;i++){
 		cout<<"Is Participant Number [ "<<i+1<<" ] Present (0/1): ";
 		cin>>ptrArray[i];
+		while(ptrArray[i]!=0 && ptrArray[i]!=1){
+			cout<<"Illegal input ,Ente either 1 or 0\nIs Participant Number [ "<<i+1<<" ] Present (0/1): ";
+			cin>>ptrArray[i];
+		}
 	}
 	cout<<"\n\n|Now Displaying Attendence|\n";
 	for(int i=0;i<NumberOfP;i++){
