@@ -9,7 +9,7 @@ int main()
 	int* p = nullptr;//
 	int l;//
 	int a = 10;//
-	p = &a;//
+	p = &a;///
 	cout << "Hello World!\n"<<*p<<endl;////
 	return 0;////
 }
