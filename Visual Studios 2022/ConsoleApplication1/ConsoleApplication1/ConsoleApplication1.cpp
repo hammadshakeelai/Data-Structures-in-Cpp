@@ -11,7 +11,7 @@ int main()
 	int a = 10;//
 	p = &a;//
 	cout << "Hello World!\n"<<*p<<endl;////
-	return 0;//
+	return 0;////
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
