@@ -7,8 +7,8 @@ int main()
 {
 	//yes
 	int* p = nullptr;
-	int l;
-	int a = 10;
+	int l;//
+	int a = 10;//
 	p = &a;//
 	cout << "Hello World!\n"<<*p<<endl;////
 	return 0;
