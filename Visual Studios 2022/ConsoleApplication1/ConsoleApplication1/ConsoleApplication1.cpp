@@ -5,7 +5,7 @@
 using namespace std;
 int main()
 {
-	//yes
+	//yes//
 	int* p = nullptr;//
 	int l;//
 	int a = 10;//
