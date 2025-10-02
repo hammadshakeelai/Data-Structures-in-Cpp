@@ -3,15 +3,60 @@
 
 #include <iostream>
 using namespace std;
-int main()
-{
-	//yes///
-	int* p = nullptr;//
-	int l;//
-	int a = 10;//
-	p = &a;////
-	cout << "Hello World!\n"<<*p<<endl;////
-	return 0;////
+
+// Node structure
+struct Node {
+    int data;
+    Node* next;
+    Node(int d) : data(d), next(nullptr) {}
+};
+
+// LinkedList class
+class LinkedList {
+private:
+    Node* head;
+public:
+    LinkedList() : head(nullptr) {}
+    ~LinkedList();
+
+    void insertAtBeginning(int value) {
+
+    }
+    void insertAtEnd(int value);
+    void insertAtPosition(int value, int pos);
+    bool deleteFromBeginning(int* removedValue = nullptr);
+    void display() const;
+};
+void Lin
+// TODO: Implement functions here...
+
+int main() {
+    LinkedList list;
+
+    // Step 1: Add 3 passengers at the end
+    list.insertAtEnd(101);
+    list.insertAtEnd(102);
+    list.insertAtEnd(103);
+    cout << "Initial Queue after adding passengers:\n";
+    list.display();
+
+    // Step 2: Emergency passenger at beginning
+    list.insertAtBeginning(999);
+    cout << "After adding an emergency passenger at beginning:\n";
+    list.display();
+
+    // Step 3: Special booking passenger at position 2
+    list.insertAtPosition(555, 2);
+    cout << "After inserting special booking passenger at position 2:\n";
+    list.display();
+
+    // Step 4: First passenger boards (delete from beginning)
+    int removed;
+    list.deleteFromBeginning(&removed);
+    cout << "After first passenger boards (deletion):\n";
+    list.display();
+
+    return 0;
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
