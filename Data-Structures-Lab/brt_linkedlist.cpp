@@ -78,7 +78,6 @@ public:
 		cout<<endl;
 	};
 };
-// TODO: Implement functions here...
 
 int main() {
     LinkedList list;
