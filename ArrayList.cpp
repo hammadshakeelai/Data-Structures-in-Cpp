@@ -1,27 +1,54 @@
 #include <iostream>
 using namespace std;
-
+create
+copy
+clear
+insert
+remove
+get
+update
+display
+find
+length
 class ArrayList {
     private:
         static const string storedType = "heap allocated array of integers";
         int* arr;
         int* curr;
         int capacity;// maximum number of elements
-        int size;//current number of elements
+        int length;//current number of elements
     public:
         static void displayFunction{
             cout << "variable static string = ArrayList::storedType" << endl;
             
         
         }
-        ArrayList(int Size=100) : capacity(Size), size(0),length(0) ,cur(nullptr) {
+        ArrayList(int Size=0) : capacity(Size),length(0) ,cur(nullptr) {
             arr = new int[capacity];
         }
         ~ArrayList() {
             delete[] arr;
 
         }
-
+        void create(int Size) {
+            capacity = Size;
+            arr = new int[capacity];
+            length = 0;
+            curr = nullptr;
+        }
+        void start() {
+            curr = arr;
+        }
+        void end() {
+            curr = arr + length - 1;
+        }
+        void next(){
+            curr++;
+        }
+        void prev(){
+            curr--;
+        }
+        
         int getCapacity() const {
             return capacity;
         }
