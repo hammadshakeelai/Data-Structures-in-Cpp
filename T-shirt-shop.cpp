@@ -140,65 +140,67 @@ int main() {
 	cout << "Enter your choice: ";
 	int choice;
 	cin >> choice;
-	while (choice < 0 || choice > 5) {
+	while (choice < 0 || choice > 5) 
+	{
 		cout << "Invalid choice. Please enter a number between 0 and 5: ";
 		cin >> choice;
-	}
-	switch (choice)
-	{
-	case 1:
-	{
-		string name;
-		int id;
-		cout << "Enter Student's Name: ";
-		cin >> name;
-		cout << "Enter Student's ID: ";
-		cin >> id;
-		//call add student function
-		queue.AddStudent(id, name);
-		//
-		cout << "Student " << name << " with ID " << id << " has been added to the queue." << endl;
-		break;
-	}
-	case 2:
-	{
-		//call serve student function
-		queue.ServeStudent();
-		//
-		cout << "Serving the student at the front of the queue..." << endl;
-		break;
-	}
-	case 3: {
+		switch (choice)
+		{
+			case 1:
+			{
+				string name;
+				int id;
+				cout << "Enter Student's Name: ";
+				cin >> name;
+				cout << "Enter Student's ID: ";
+				cin >> id;
+				//call add student function
+				queue.AddStudent(id, name);
+				//
+				cout << "Student " << name << " with ID " << id << " has been added to the queue." << endl;
+				break;
+			}
+			case 2:
+			{
+				//call serve student function
+				queue.ServeStudent();
+				//
+				cout << "Serving the student at the front of the queue..." << endl;
+				break;
+			}
+			case 3: {
 
-		cout << "Enter Student's ID to remove: ";
-		int removeId;
-		cin >> removeId;
-		//call remove student function
-		queue.RemoveStudentById(removeId);
-		//
-		cout << "Student with ID " << removeId << " has been removed from the queue." << endl;
-		break;
+				cout << "Enter Student's ID to remove: ";
+				int removeId;
+				cin >> removeId;
+				//call remove student function
+				queue.RemoveStudentById(removeId);
+				//
+				cout << "Student with ID " << removeId << " has been removed from the queue." << endl;
+				break;
+			}
+			case 4:
+			{
+				//call display queue function
+				queue.DisplayQueue();
+				//
+				break;
+			}
+			case 5:
+			{
+				//call count students function
+				cout << "Total students in queue: " << queue.CountStudents() << endl;
+				//
+				break;
+			}
+			default:
+			{
+				cout << "Invalid choice. Please try again." << endl;
+				break;
+			}
+		}
 	}
-	case 4:
-	{
-		//call display queue function
-		queue.DisplayQueue();
-		//
-		break;
-	}
-	case 5:
-	{
-		//call count students function
-		cout << "Total students in queue: " << queue.CountStudents() << endl;
-		//
-		break;
-	}
-	default:
-	{
-		cout << "Invalid choice. Please try again." << endl;
-		break;
-	}
-	}
+	
 
 	//---------------------------------------------------------------
 	auto end = high_resolution_clock::now();     // end time
