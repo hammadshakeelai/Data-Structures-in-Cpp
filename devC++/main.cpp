@@ -1,172 +1,143 @@
 #include<iostream>
 #include <chrono>
+#include <fstream>
 using namespace std;
 using namespace std::chrono;
-
-struct Node {
-	int id;
-	string name;
-	Node* next;
-	Node(int d,string n) : id(d), name(n), next(nullptr) {}
-};
-class Queue {
-private:
-	Node* head;
-	Node* tail;
-	
-public:
-	Queue() : head(nullptr) ,tail(nullptr) {}
-	~Queue() {// tick
-		Node* cur = head;
-		Node* temp = nullptr;
-		while (cur) {
-			temp = cur->next;
-			delete cur;
-			cur = temp;
-		}
-	}
-	void AddStudent(int id,string name) {//use tail // tick
-		Node* node = new Node(id,name);
-		if (head == nullptr) {
-			head = node;
-			tail = node;
-			return;
-		}
-		tail->next = node;
-		tail = node
-	}
-	bool ServeStudent() {
-		if (head == nullptr) {
-			return false;
-		}
-		Node* temp = head;
-		head = temp->next;
-		delete temp;
-		return true;
-	}
-	int CountStudents() const {// tick
-		int count = 0;
-		Node* cur = head;
-		while (cur) {
-			count++;
-			cur = cur->next;
-		}
-		return count;
-	}
-	bool RemoveStudentById(int Id) {
-		if (head == nullptr) {
-			cout << "Queue is empty, cannot remove student." << endl;
-			return false;
-		}
-		Node* cur = head;
+// ips.txt
+// 192.168.1.10,10.0.0.5,172.16.0.1,203.0.113.5,198.51.100.23,8.8.8.8,8.8.4.4,192.0.2.45,10.10.10.10,172.20.14.2,52.214.10.7,34.102.136.180,185.199.108.153,13.35.66.1,44.240.20.10
+class Node {
+	public:
+		string ip;
+		Node* next;
 		Node* prev;
-		while (cur) {
-			if (cur->next == nullptr && cur->id == Id){
-				delete cur;
-				head = nullptr;
-				tail = nullptr;
-				return true;
-			}
-			if (cur->id ==Id) {
-				prev->next = cur->next;
-				cout << "Student with ID " << Id << " has been removed from the queue." << endl;
-				delete cur;
-				if (cur == tail){
-					tail = prev->next;
-				}
-				return true;
-			}
-			prev = cur;
-			cur = cur->next;
-		}
-		cout << "Student with ID " << Id << " not found in the queue." << endl;
-		return false;
-	}
-	void DisplayQueue() const {// tick
-		Node* cur = head;
-		cout << "Displaying Queue:\n";
-		while (cur) {
-			cout << cur->name << " : " << cur->id <<endl;
-			cur = cur->next;
-		}
-	}
+		Node(string iP) : ip(iP), prev(nullptr), next(nullptr) {}
 };
+class DoublyLinkedList{
+	public:
+		Node *head;
+		Node *tail;
+		DoublyLinkedList(){
+			cout << "Constructor called, list initialized." << endl;
+			head = nullptr;
+			tail = nullptr;
+		}
+		~DoublyLinkedList(){
+			Node* temp = head;
+			while(head != nullptr){
+				head = head->next;
+				delete temp;
+				temp = head;
+			}
+			cout << "Destructor called, memory freed." << endl;
+		}
+		void Display(){
+			Node* curr = head;
+			if(head==nullptr){
+				cout << "List is Empty." << endl;
+				return;
+			}
+			while(curr != nullptr){
+				cout << curr->ip;
+				if(curr->next != nullptr){
+					cout << " -> ";
+				}
+				curr = curr->next;
+			}
+			cout << endl;
+		}
+		void insertAtTheBeginning(string value){
+			Node* newNode = new Node(value);
+			if(head != nullptr){
+				head->prev = newNode;
+			} 
+			newNode->next = head;
+			
+			if(head == nullptr){
+				tail = newNode;
+			}
+			head = newNode;
+		}
+		void insertAtEnd(string value){
+			Node* newNode = new Node(value);
+			if(tail == nullptr){
+				head = newNode;
+				tail = newNode;
+				return;
+			}
+			tail->next = newNode;
+			newNode->prev = tail;
+			tail = newNode;
+		}
+		void Display_Reverse(){
+			Node* curr = tail;
+			if(tail==nullptr){
+				cout << "List is Empty." << endl;
+				return;
+			}
+			while(curr != nullptr){
+				cout << curr->ip;
+				if(curr->prev != nullptr){
+					cout << " <- ";
+				}
+				curr = curr->prev;
+			}
+			cout << endl;
+		}
+};
+void split(string text,string array[]) {
+	string word = "";
+	int pointer = 0;
+	for(char ch : text){
+		if(ch==','){
+			if (word != ""){
+				array[pointer] = word;
+				pointer++;
+				word="";
+			}
+		}
+		else{
+			word = word + ch;
+		}
+	}
+	array[pointer] = word;
+}
+int numofips(string text){
+	int counter = 0;
+	for(char ch:text){
+		if (ch==','){
+			counter++;
+		}
+	}
+	return ++counter;
+}
 int main(){
 	auto start = high_resolution_clock::now();   // start time
 	//---------------------------------------------------------------
-
-	Queue queue;
-	cout << "===== Code-a-Thon T-Shirt Queue Menu =====" << endl;
-	cout << "1. Add Student to Queue" << endl;
-	cout << "2. Serve Student from Front" << endl;
-	cout << "3. A Student Leaves" << endl;
-	cout << "4. Display Queue" << endl;
-	cout << "5. Count Students in Queue" << endl;
-	cout << "0. Exit" << endl;
-	cout << "==========================================" << endl;
-	cout << "Enter your choice: ";
-	int choice;
-	cin >> choice;
-	while(choice < 0 || choice > 5) {
-		cout << "Invalid choice. Please enter a number between 0 and 5: ";
-		cin >> choice;
+	ifstream file("ips.txt");
+	//<-- open file -->
+//	if (!file) { // wrote to test if my file was connected 
+//		cerr << "Error opening file." << endl;
+//	}
+	DoublyLinkedList *ipAddressList = new DoublyLinkedList;
+	string line;
+	getline(file, line);
+//	cout << line;
+	string arr[numofips(line)];
+	split(line,arr);
+	for(string ip : arr){
+		ipAddressList->insertAtTheBeginning(ip);
 	}
-	switch (choice) 
-	{
-		case 1:
-		{
-			string name;
-			int id;
-			cout << "Enter Student's Name: ";
-			cin >> name;
-			cout << "Enter Student's ID: ";
-			cin >> id;
-			//call add student function
-			queue.AddStudent(id,name);
-			//
-			cout << "Student " << name << " with ID " << id << " has been added to the queue." << endl;
-			break;
-		}
-		case 2:
-		{
-			//call serve student function
-			queue.ServeStudent();
-			//
-			cout << "Serving the student at the front of the queue..." << endl;
-			break;
-		}
-		case 3:{
-		
-			cout << "Enter Student's ID to remove: ";
-			int removeId;
-			cin >> removeId;
-			//call remove student function
-			queue.RemoveStudentById(removeId);
-			//
-			cout << "Student with ID " << removeId << " has been removed from the queue." << endl;
-			break;
-		}
-		case 4:
-		{
-			//call display queue function
-			queue.DisplayQueue();
-			//
-			break;
-		}
-		case 5:
-		{
-			//call count students function
-			cout << "Total students in queue: " << queue.CountStudents() << endl;
-			//
-			break;
-		}
-		default:
-		{
-			cout << "Invalid choice. Please try again." << endl;
-			break;
-		}
-	}
-
+	ipAddressList->Display();
+	ipAddressList->Display_Reverse();
+	
+	delete ipAddressList;
+	//<-- close file -->
+	file.close();
+//	DoublyLinkedList *ipAddressList = new DoublyLinkedList;
+//	ipAddressList->Display();
+//	string ip;
+//	file.get(ch)
+//	ipAddressList.insertAtTheBeginning(ip);
     //---------------------------------------------------------------
     auto end = high_resolution_clock::now();     // end time
     auto duration = duration_cast<milliseconds>(end - start);
