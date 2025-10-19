@@ -214,6 +214,8 @@ int main(){
 //	l.DisplayReverse_without_tail(); // 11 <- 9
 	l.ReverseTheList();
 	l.Display();
+	l.ReverseTheList();
+	l.Display();
     //---------------------------------------------------------------
     return 0;
 }

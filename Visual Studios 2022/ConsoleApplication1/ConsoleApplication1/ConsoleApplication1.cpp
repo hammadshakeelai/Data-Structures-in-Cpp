@@ -1,75 +1,42 @@
-// ConsoleApplication1.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
-//Problem Statement : The "Code-a-Thon" T - Shirt Queue
-//Background :
-	//You are a volunteer at a university "Code-a-Thon" event.The first 100 participants to arrive get a free, limited - edition T - shirt.To manage this, you need to create a simple console - based application that tracks the queue of students waiting for their T - shirts.
-	//The process is dynamic : students arrive and join the queue, and sometimes a student has to leave the queue early if they get a call or forget their ID card.The first person in the queue is served when a T - shirt becomes available.
-//The Challenge :
-	//Your task is to build a system to manage this queue.The system must handle an unknown number of students.You cannot simply reserve space for 100 students in advance, as you don't know how many will show up at any given moment, and the line will constantly change. The system must be efficient when students join or leave the line.
-//System Requirements :
-//You need to implement a program that provides the following options to the event organizer :
-//1.	Add Student : A new student arrives and joins the end of the queue.The system should ask for the student's name and a unique student ID (an integer).
-//2.	Serve Student : The student at the front of the queue receives their T - shirt and is removed from the line.The system should display the name of the student who was served.If the queue is empty, it should report that.
-//3.	Student Leaves : A student needs to leave the queue unexpectedly.The organizer must be able to remove a student from any position in the queue by entering their unique student ID.
-//4.	Display Queue : Show the current list of all students in the queue, from front to back, along with their student IDs.
-//5.	Count Students : Display the total number of students currently waiting in the queue.
-//Data to Store for Each Student :
-	//•	Student Name(e.g., "Ali Khan")
-	//•	Student ID(e.g., 12345)
-//Hints for Your Thought Process(Why this isn't a simple array problem):
-	//	•	How will you handle the list of students if you don't know the maximum number of people who will join the queue?
-	//	•	When a student leaves from the middle of the queue, how would you manage the list without having to shift many other students' data around? Think about what would be the most efficient way to "patch up" the line.
-	//	•	The order of students is crucial.The first one to arrive must be the first one to be served.
-//	What to Submit :
-//Submit your source code files.The program should be a menu - driven console application that allows the user to choose from the functions listed above until they choose to exit.
-//
-//Sample Console Application :
-//
-//
-
-//add student at end name and id
-//serve student remove from start student name if empty display queue is empty
-//student leaves remove by id if id not found display id not found
-//display queue from front to back with name and id
-//count students
 #include<iostream>
 #include <chrono>
 using namespace std;
 using namespace std::chrono;
-
+// joesephus problem circular linked list
 struct Node {
-	int id;
-	string name;
+	int data;
 	Node* next;
-	Node(int d, string n) : id(d), name(n), next(nullptr) {}
+	Node(int value) : data(value), next(nullptr) {}
 };
-class Queue {
-private:
+class CircularSinglyLinkedList {
+public:
 	Node* head;
 	Node* tail;
 
 public:
-	Queue() : head(nullptr), tail(nullptr) {}
-	~Queue() {// tick
+	CircularSinglyLinkedList() : head(nullptr), tail(nullptr) {}
+	~CircularSinglyLinkedList() {
 		Node* cur = head;
 		Node* temp = nullptr;
-		while (cur) {
+		do{
 			temp = cur->next;
 			delete cur;
 			cur = temp;
-		}
+		}while (cur != head);
 	}
-	void AddStudent(int id, string name) {//use tail // tick
-		Node* node = new Node(id, name);
+	void addAtEnd(int value) {//use tail // tick
+		Node* node = new Node(value);
 		if (head == nullptr) {
 			head = node;
 			tail = node;
+			node->next = head;
 			return;
 		}
 		tail->next = node;
 		tail = node;
+		node->next = head;
 	}
-	bool ServeStudent() {// tick
+	bool revoveFromHead() {// tick
 		if (head == nullptr) {
 			cout << "queue is empty.\n";
 			return false;
@@ -79,34 +46,43 @@ public:
 		delete temp;
 		return true;
 	}
-	int CountStudents() const {// tick
+	int count() const {
 		int count = 0;
 		Node* cur = head;
-		while (cur) {
+		if (cur == nullptr) {
+			return count;
+		}
+		do{
 			count++;
 			cur = cur->next;
-		}
+		}while (cur != head);
 		return count;
 	}
-	bool RemoveStudentById(int Id) {// tick
+	bool removePos(int pos) {
 		if (head == nullptr) {
 			cout << "queue is empty.\n";
 			return false;
 		}
+		if(pos > count() || pos < 1) {
+			cout << "Pos out of bounds.\n";
+			return false;
+		}
 		Node* temp = head;
-		if (head->id == Id) {//start
+		if (pos == 1) {//start
 			
 			head = head->next;
 			delete temp;
 			return true;
 		}
-		while (temp->next && (temp->next)->id != Id) {
+		for(int i = 1;i < pos-1;i++) 
+		{
+			/*if (temp->next == nullptr) {
+				cout << "Pos out of bounds.\n";
+				return false;
+			}*/
 			temp = temp->next;
 		}
-		if (temp->next == nullptr) {
-			cout << "ID not found.\n";
-			return false;
-		}
+		
 		Node* cur = temp->next;
 		temp->next = cur->next;
 		if (cur == tail) {
@@ -115,91 +91,92 @@ public:
 		delete cur;
 		return true;
 	}
-	void DisplayQueue() const {// tick
+	void Display() const {// tick
 		Node* cur = head;
-		cout << "Displaying Queue:\n";
-		while (cur) {
-			cout << cur->name << " : " << cur->id << endl;
-			cur = cur->next;
+		cout << "Displaying List:\n";
+		if (cur == nullptr) {
+			cout << "List is empty.\n";
+			return;
 		}
+		 do{
+			cout << cur->data << " -> ";
+			cur = cur->next;
+		}while (cur != head);
+	}
+	int josephusProblem(int k) {
+		if (head == nullptr || k <= 0) {
+			cout << "List is empty or invalid k.\n";
+			return -1;
+		}
+		Node* cur = head;
+		Node* prev = tail;
+		while (count() > 1) {
+			for (int i = 1; i < k; i++) {
+				prev = cur;
+				cur = cur->next;
+			}
+			prev->next = cur->next;
+			if (cur == head) {
+				head = cur->next;
+			}
+			if (cur == tail) {
+				tail = prev;
+			}
+			delete cur;
+			cur = prev->next;
+		}
+		int survivor = head->data;
+		delete head;
+		head = nullptr;
+		tail = nullptr;
+		return survivor;
 	}
 };
+int josephusProblem(int n,int m) {
+	CircularSinglyLinkedList list;
+	for(int i = 1; i <= n; i++) {
+		list.addAtEnd(i);
+	}
+	if (list.head == nullptr || m <= 0) {
+		cout << "List is empty or invalid k.\n";
+		return -1;
+	}
+	Node* cur = list.head;
+	while (list.count() > 1) {
+		for (int i = 1; i < m - 1; i++) {
+			cur = cur->next;
+		}
+		Node* temp = cur->next;
+		cur->next = temp->next;
+		if (temp == list.head) {
+			list.head = temp->next;
+		}
+		if (temp == list.tail) {
+			list.tail = cur;
+		}
+		delete temp;
+		cur = cur->next;
+	}
+	return list.head->data;
+}
 int main() {
 	auto start = high_resolution_clock::now();   // start time
 	//---------------------------------------------------------------
+	CircularSinglyLinkedList list;/*
+	list.addAtEnd(1);
+	list.addAtEnd(2);
+	list.addAtEnd(3);
+	list.addAtEnd(4);
+	cout << list.josephusProblem(2);*/
 
-	Queue queue;
-	cout << "===== Code-a-Thon T-Shirt Queue Menu =====" << endl;
-	cout << "1. Add Student to Queue" << endl;
-	cout << "2. Serve Student from Front" << endl;
-	cout << "3. A Student Leaves" << endl;
-	cout << "4. Display Queue" << endl;
-	cout << "5. Count Students in Queue" << endl;
-	cout << "0. Exit" << endl;
-	cout << "==========================================" << endl;
-	cout << "Enter your choice: ";
-	int choice;
-	cin >> choice;
-	while (choice < 0 || choice > 5) {
-		cout << "Invalid choice. Please enter a number between 0 and 5: ";
-		cin >> choice;
-	}
-	switch (choice)
-	{
-	case 1:
-	{
-		string name;
-		int id;
-		cout << "Enter Student's Name: ";
-		cin >> name;
-		cout << "Enter Student's ID: ";
-		cin >> id;
-		//call add student function
-		queue.AddStudent(id, name);
-		//
-		cout << "Student " << name << " with ID " << id << " has been added to the queue." << endl;
-		break;
-	}
-	case 2:
-	{
-		//call serve student function
-		queue.ServeStudent();
-		//
-		cout << "Serving the student at the front of the queue..." << endl;
-		break;
-	}
-	case 3: {
-
-		cout << "Enter Student's ID to remove: ";
-		int removeId;
-		cin >> removeId;
-		//call remove student function
-		queue.RemoveStudentById(removeId);
-		//
-		cout << "Student with ID " << removeId << " has been removed from the queue." << endl;
-		break;
-	}
-	case 4:
-	{
-		//call display queue function
-		queue.DisplayQueue();
-		//
-		break;
-	}
-	case 5:
-	{
-		//call count students function
-		cout << "Total students in queue: " << queue.CountStudents() << endl;
-		//
-		break;
-	}
-	default:
-	{
-		cout << "Invalid choice. Please try again." << endl;
-		break;
-	}
-	}
-
+	cout << "Josephus Problem Simulation:\n";
+	int n; // number of people
+	cout << "Enter number of people (n): ";
+	cin >> n;
+	int m; // step count
+	cout << "Enter step count (m): ";
+	cin >> m;
+	cout << "The position of the last remaining person is: " << josephusProblem(n, m) << endl;
 	//---------------------------------------------------------------
 	auto end = high_resolution_clock::now();     // end time
 	auto duration = duration_cast<milliseconds>(end - start);
@@ -217,3 +194,31 @@ int main() {
 //   4. Use the Error List window to view errors
 //   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
 //   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
+/*int josephusProblem(int k) {
+	if (head == nullptr || k <= 0) {
+		cout << "List is empty or invalid k.\n";
+		return -1;
+	}
+	Node* cur = head;
+	Node* prev = tail;
+	while (count() > 1) {
+		for (int i = 1; i < k; i++) {
+			prev = cur;
+			cur = cur->next;
+		}
+		prev->next = cur->next;
+		if (cur == head) {
+			head = cur->next;
+		}
+		if (cur == tail) {
+			tail = prev;
+		}
+		delete cur;
+		cur = prev->next;
+	}
+	int survivor = head->data;
+	delete head;
+	head = nullptr;
+	tail = nullptr;
+	return survivor;
+}*/
