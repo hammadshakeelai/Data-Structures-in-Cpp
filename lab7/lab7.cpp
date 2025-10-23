@@ -42,11 +42,12 @@ public:
 	//Task 1: Create a destructor
 	~DLL() {
 		Node* curr = head;
+        while (curr != nullptr) {
+            Node* next = curr->next;
+            delete curr;
+            curr = next;
+        }
 
-		while (curr != nullptr) {
-			curr = curr->next;
-			delete curr->prev;
-		}
 	}
 
 
@@ -114,7 +115,7 @@ public:
 		}
 		head = newNode;
 
-		if (head->next == nullptr)
+		if (tail == nullptr)
 		{
 			tail = newNode;
 		}
@@ -172,6 +173,8 @@ public:
 		* Do you see all the 5 element?
 		* If No Fix the code segement.
 		*/
+        if (newNode->next == nullptr)
+            tail = newNode;
 
 	}
 
@@ -237,7 +240,8 @@ public:
 			{
 				cout << "Node found...";
 				DisplayNode(current);
-			}
+                return;
+            }
 			current = current->next;
 		}
 	}
