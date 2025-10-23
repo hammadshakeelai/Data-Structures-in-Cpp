@@ -4,160 +4,76 @@ using namespace std;
 class Node {
 public:
 	int data;
-	Node* next;
-	Node(int value) : data(value), next(nullptr) {}
+	Node* right_child;
+	Node* left_child;
+	Node(int value) : data(value), right_child(nullptr), left_child(nullptr) {}
 };
-class SinglyLinkedList {
-public:
-	Node* head;
-	SinglyLinkedList() {
-		cout << "Constructor called, list initialized." << endl;
-		head = nullptr;
-	}
-	~SinglyLinkedList() {
-		Node* temp = head;
-		while (head != nullptr) {
-			head = head->next;
-			delete temp;
-			temp = head;
-		}
-		cout << "\nDestructor called, memory freed." << endl;
-	}
-	void pop() {
-		if (head == nullptr) {
-			cout << "List is empty, nothing to pop." << endl;
-			return;
-		}
-		Node* temp = head;
-		head = head->next;
-		delete temp;
-	}
-	void peak () {
-		if (head != nullptr) {
-			cout << "Head: " << head->data << endl;
-		}
-		else {
-			cout << "List is empty, no head." << endl;
-		}
-	}
-	void Display() {
-		Node* curr = head;
-		if (head == nullptr) {
-			cout << "List is Empty." << endl;
-			return;
-		}
-		while (curr != nullptr) {
-			cout << curr->data;
-			if (curr->next != nullptr) {
-				cout << " -> ";
-			}
-			curr = curr->next;
-		}
-		cout << endl;
-	}
-	void insertAtTheBeginning(int value) {
-		Node* newNode = new Node(value);
-		newNode->next = head;
-		head = newNode;
-	}
-	void DisplayReverse_without_tail() {
-		if (head == nullptr) {
-			cout << "List is Empty." << endl;
-		}
-		int counter = 0;
-		Node* curr = head;
-		while (curr->next != nullptr) {
-			curr = curr->next;
-			counter++;
-		}
-		cout << curr->data;
-		for (int i = counter; i >= 1; i--) {
-			curr = head;
-			for (int j = 1; j < i; j++) {
-				curr = curr->next;
-			}
-			cout << " <- " << curr->data;
-		}
-	}
-};
-class stack_d {
-	public:
-		SinglyLinkedList list;
-		void add(int value) {
-			list.insertAtTheBeginning(value);
-		}
-		void remove() {
-			list.pop();
-		}
-		void peak() {
-			list.peak();
-		}
-		void displayfullstack() {
-			list.Display();
-		}
-};
-class stack_f {
+class BinaryTree {
 	private:
-		int* arr;
-		int size;
-		int length = 0;
+		Node* root;
 	public:
-		stack_f(int s) {
-			arr = new int[s];
-			size = s;
-		}
-		~stack_f() {
-			delete[] arr;
-		}
-		void add(int value) {
-			if (length < size) {
-				arr[length] = value;
-				length++;
-			}
-			else {
-				cout << "Stack Overflow" << endl;
-			}
-		}
-		void remove() {
-			if (length > 0) {
-				length--;
-			}
-			else {
-				cout << "Stack Underflow" << endl;
-			}
-		}
-		void peak() {
-			if (length > 0) {
-				cout << "Top element: " << arr[length - 1] << endl;
-			}
-			else {
-				cout << "Stack is empty" << endl;
-			}
-		}
-		void displayfullstack() {
-			if (length == 0) {
-				cout << "Stack is empty" << endl;
-				return;
-			}
-			/*for (int i = length - 1; i >= 0; i--) {
-				cout << arr[i];
-				if (i != 0) {
-					cout << " -> ";
-				}
-			}*/
-			for(int i = 0; i < length; i++) {
-				cout << arr[i];
-				if (i != length - 1) {
-					cout << " -> ";
-				}
-			}
-			cout << endl;
-		}
+		BinaryTree() : root(nullptr) {}
+		~BinaryTree() {
+			// Destructor logic to free memory can be added here
 
-};;
+		}
+		Node* insertRec(Node* node, int value) {
+			if (node == nullptr) {
+				return new Node(value);
+			}
+			if (value > node->data) {
+				node->right_child = insertRec(node->right_child, value);
+			}
+			else if (value < node->data) {
+				node->left_child = insertRec(node->left_child, value);
+			}
+			else {
+				return node;
+			}
+		}
+		void insert(int value) {
+			if(root == nullptr) {
+				root = new Node(value);
+			}
+			else {
+				if (value > root->data) {
+					root->right_child = insertRec(root->right_child, value);
+				}
+				else if (value < root->data) {
+					root->left_child = insertRec(root->left_child, value);
+				}
+				else { return; }
+			}
+		
+		}
+		void DisplayInOrder(Node* node) {
+			if (node != nullptr) {
+				DisplayInOrder(node->left_child);
+				cout << node->data << " ";
+				DisplayInOrder(node->right_child);
+			}
+		}
+		Node* getRoot() {
+			return root;
+		}
+		void Display() {
+			DisplayInOrder(root);
+		}
+};
 int main() {
 	//---------------------------------------------------------------
-	
+	BinaryTree tree;
+	tree.insert(50);
+	tree.insert(30);
+	tree.insert(20);
+	tree.insert(40);
+	tree.insert(70);
+	tree.insert(60);
+	tree.insert(80);
+	cout << "In-order traversal of the binary search tree is: ";
+	tree.Display();
+	cout << endl;
+
 	//---------------------------------------------------------------
 	return 0;
 }
