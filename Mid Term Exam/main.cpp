@@ -122,8 +122,7 @@ class ER_Queue{
 			}
 			delete temp;
 			cout << "new patient arrived, Patient ID: " << patientID << " At Position " << position << endl;
-		}
-		
+		}	
 		void Display(){
 			Patient* curr = head;
 			if(head==nullptr){
