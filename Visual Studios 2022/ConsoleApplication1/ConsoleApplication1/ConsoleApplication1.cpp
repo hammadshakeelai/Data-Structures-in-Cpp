@@ -3,207 +3,83 @@ using namespace std;
 class Node {
 public:
     int val;
-    Node* next;
-    Node* prev;
-    Node(int value) : val(value), prev(nullptr), next(nullptr) {}
+    Node* left;
+    Node* right;
+    Node(int value) : val(value), left(nullptr), right(nullptr) {}
 };
-class CircularLinkedList {
+class BinaryTree {
 public:
-    Node* head;
-    Node* tail;
-    int length;
-public:
-    CircularLinkedList() : head(nullptr), tail(nullptr), length(0) {}
-    ~CircularLinkedList() {
-        clear();
-    }
-
-    void insert(int val, int pos) {
-        if (pos <= 0 || pos > (length + 1)) {
-            cout << "out of bounds" << endl;
+    Node* root;
+	BinaryTree() : root(nullptr) {}
+    ~BinaryTree() {
+        deleteTree(root);
+	}
+    void preOrder(Node* node) {
+        if (node == nullptr) 
             return;
-        }
-        Node* temp = new Node(val);
-        if (length == 0) {
-            head = tail = temp;
-            temp->next = temp->prev = temp;
-        }
-        else if (pos == 1) {
-            temp->next = head;
-            temp->prev = tail;
-            head->prev = temp;
-            tail->next = temp;
-            head = temp;
-        }
-        else if (pos == length + 1) {
-            temp->prev = tail;
-            temp->next = head;
-            tail->next = temp;
-            head->prev = temp;
-            tail = temp;
-        }
-        else {
-            Node* cur = head;
-            for (int i = 1; i < pos - 1; i++) {
-                cur = cur->next;
-            }
-            temp->next = cur->next;
-            temp->prev = cur;
-            cur->next->prev = temp;
-            cur->next = temp;
-        }
-        length++;
-    }
-
-    void remove(int pos) {
-        if (head == nullptr || length == 0) {
-            cout << "Empty" << endl;
+        cout << node->val << "    ";
+        preOrder(node->left);
+        preOrder(node->right);
+	}
+    void inOrder(Node* node) {
+        if (node == nullptr)
             return;
-        }
-        if (pos < 1 || pos > length) {
-            cout << "invalid position" << endl;
-            return;
-        }
-        Node* cur = nullptr;
-        if (length == 1) {
-            cur = head;
-            delete cur;
-            head = tail = nullptr;
-        }
-        else if (pos == 1) {
-            cur = head;
-            head = head->next;
-            head->prev = tail;
-            tail->next = head;
-            delete cur;
-        }
-        else if (pos == length) {
-            cur = tail;
-            tail = tail->prev;
-            tail->next = head;
-            head->prev = tail;
-            delete cur;
-        }
-        else {
-            cur = head;
-            for (int i = 1; i < pos; i++) {
-                cur = cur->next;
-            }
-            cur->prev->next = cur->next;
-            cur->next->prev = cur->prev;
-            delete cur;
-        }
-        length--;
+        inOrder(node->left);
+        cout << node->val << "    ";
+        inOrder(node->right);
     }
-
-    int get(int pos) {
-        if (head == nullptr || length == 0) {
-            cout << "empty" << endl;
+    void postOrder(Node* node) {
+        if (node == nullptr)
+            return;
+        postOrder(node->left);
+        postOrder(node->right);
+        cout << node->val << "    ";
+    }
+    Node* parent(Node* curr, Node* child, Node* par = nullptr) {
+        if (curr == nullptr)
+            return nullptr;
+        if (curr == child)
+            return par;
+        Node* leftSearch = parent(curr->left, child, curr);
+        if (leftSearch != nullptr)
+            return leftSearch;
+        return parent(curr->right, child, curr);
+	}
+    Node* sibling(Node* curr, Node* child) {
+        Node* par = parent(root, child, nullptr);
+        if (par == nullptr)
+            return nullptr;
+        if (par->left == child)
+            return par->right;
+        return par->left;
+	}
+    int getLevel(Node* ptr, int val, int level) {
+        if (ptr == nullptr)
             return -1;
-        }
-        if (pos < 1 || pos > length) {
-            cout << "invalid position" << endl;
+        if (ptr->val == val)
+            return level;
+		//int left = getLevel(ptr->left, val, level + 1);
+		//int right = getLevel(ptr->right, val, level + 1);
+        int downlevel = getLevel(ptr->left, val, level + 1);// X
+        if (downlevel != 0)// (left > right)
+			return downlevel;// return left;
+		return getLevel(ptr->right, val, level + 1);// return right;
+	}
+    int maxDepth(Node* node) {
+        if (node == nullptr)
             return -1;
-        }
-        Node* cur = head;
-        for (int i = 1; i < pos; i++) {
-            cur = cur->next;
-        }
-        return cur->val;
-    }
-
-    void update(int val, int pos) {
-        if (head == nullptr || length == 0) {
-            cout << "empty" << endl;
+        int leftDepth = maxDepth(node->left);
+        int rightDepth = maxDepth(node->right);
+        return (leftDepth > rightDepth)? leftDepth + 1 : rightDepth + 1;
+	}
+    void deleteTree(Node* leaf) {
+        if (leaf == nullptr)
             return;
-        }
-        if (pos < 1 || pos > length) {
-            cout << "invalid position" << endl;
-            return;
-        }
-        Node* cur = head;
-        for (int i = 1; i < pos; i++) {
-            cur = cur->next;
-        }
-        cur->val = val;
-    }
-
-    void clear() {
-        if (head == nullptr || length == 0) {
-            head = tail = nullptr;
-            length = 0;
-            return;
-        }
-        Node* cur = head->next;
-        while (cur != head) {
-            Node* next = cur->next;
-            delete cur;
-            cur = next;
-        }
-        delete head;
-        head = tail = nullptr;
-        length = 0;
-    }
-
-    int findPos(int val) {
-        if (head == nullptr || length == 0) return -1;
-        Node* cur = head;
-        int pos = 1;
-        do {
-            if (cur->val == val) return pos;
-            cur = cur->next;
-            pos++;
-        } while (cur != head);
-        return -1;
-    }
-
-    int findVal(int pos) {
-        return get(pos);
-    }
-
-    bool removeVal(int val) {
-        int pos = findPos(val);
-        if (pos == -1) return false;
-        remove(pos);
-        return true;
-    }
-    int main() {
-        CircularLinekedL
-            Node* cur = students.head;
-        while (students.length > 1) {
-            for (int i = 1; i < k; ++i) {
-                cur = cur->next;
-            }
-            Node* temp = cur;
-            cur = cur->next;
-            students.removeVal(temp->val);
-        }
-        if (students.head)
-            cout << endl << students.head->val << endl;
-        cout << "Enter K-th person to be deleted: ";
-        int k;
-        cin >> k;
-        Node* cur = students.head;
-        while (students.head != students.tail) {
-            for (int i = 1; i < k - 1; i++) {
-                cur = cur->next;
-            }
-            Node* temp = cur->next;
-            cur->next = temp->next;
-            //
-            if (temp->next->prev)
-                temp->next->prev = cur;
-            if (temp == students.tail) {
-                students.tail = cur;
-            }
-            if (students.head == temp) {
-                students.head = cur->next;
-            }
-            delete temp;
-
-            cur = cur->next;
-            //	students.display();
-        }
-        cout << endl << students.head->val << endl;
+        deleteTree(leaf->left);
+        deleteTree(leaf->right);
+        delete leaf;
+	}
+};
+int main() {
         return 0;
     }
