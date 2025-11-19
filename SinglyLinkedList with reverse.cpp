@@ -11,12 +11,12 @@ class SinglyLinkedList{
 	public:
 		Node *head;
 		Node *tail;
-		SinglyLinkedList(){
+		SinglyLinkedList(){// nullifier
 			cout << "Constructor called, list initialized." << endl;
 			head = nullptr;
 			tail = nullptr;
 		}
-		~SinglyLinkedList(){
+		~SinglyLinkedList(){//graza groza machine
 			Node* temp = head;
 			while(head != nullptr){
 				head = head->next;
@@ -43,7 +43,7 @@ class SinglyLinkedList{
 		void insertAtTheBeginning(int value){
 			Node* newNode = new Node(value);
 			newNode->next = head;
-			if(head == nullptr){
+			if(tail == nullptr){
 				tail = newNode;
 			}
 			head = newNode;
@@ -117,11 +117,15 @@ void split(string text,string array[]) {
 }
 int main(){
 	//---------------------------------------------------------------
-	SinglyLinkedList l;
-	l.insertAtEnd(9);
-	l.insertAtEnd(11);
-	l.Display();
-	l.DisplayReverse_without_tail();
+	Node b(9);
+	Node *v =&;
+	cout<<v->data<<endl; // Undefined Behavior // bro segmentation fault
+	delete v;
+	// int x = 6
+	// Node x(6)
+	// x.data
+	// n.next
+
     //---------------------------------------------------------------
     return 0;
 }
