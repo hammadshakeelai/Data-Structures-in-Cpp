@@ -1,85 +1,157 @@
 #include<iostream>
 using namespace std;
 class Node {
-public:
-    int val;
-    Node* left;
-    Node* right;
-    Node(int value) : val(value), left(nullptr), right(nullptr) {}
+	public:
+		int data;
+		Node* next;
+		Node(int val) {
+			data = val;
+			next = nullptr;
+		}
 };
-class BinaryTree {
-public:
-    Node* root;
-	BinaryTree() : root(nullptr) {}
-    ~BinaryTree() {
-        deleteTree(root);
-	}
-    void preOrder(Node* node) {
-        if (node == nullptr) 
-            return;
-        cout << node->val << "    ";
-        preOrder(node->left);
-        preOrder(node->right);
-	}
-    void inOrder(Node* node) {
-        if (node == nullptr)
-            return;
-        inOrder(node->left);
-        cout << node->val << "    ";
-        inOrder(node->right);
-    }
-    void postOrder(Node* node) {
-        if (node == nullptr)
-            return;
-        postOrder(node->left);
-        postOrder(node->right);
-        cout << node->val << "    ";
-    }
-    Node* parent(Node* curr, Node* child, Node* par = nullptr) {
-        if (curr == nullptr)
-            return nullptr;
-        if (curr == child)
-            return par;
-        Node* leftSearch = parent(curr->left, child, curr);
-        if (leftSearch != nullptr)
-            return leftSearch;
-        return parent(curr->right, child, curr);
-	}
-    Node* sibling(Node* curr, Node* child) {
-        Node* par = parent(root, child, nullptr);
-        if (par == nullptr)
-            return nullptr;
-        if (par->left == child)
-            return par->right;
-        return par->left;
-	}
-    int getLevel(Node* ptr, int val, int level) {
-        if (ptr == nullptr)
-            return -1;
-        if (ptr->val == val)
-            return level;
-		//int left = getLevel(ptr->left, val, level + 1);
-		//int right = getLevel(ptr->right, val, level + 1);
-        int downlevel = getLevel(ptr->left, val, level + 1);// X
-        if (downlevel != 0)// (left > right)
-			return downlevel;// return left;
-		return getLevel(ptr->right, val, level + 1);// return right;
-	}
-    int maxDepth(Node* node) {
-        if (node == nullptr)
-            return -1;
-        int leftDepth = maxDepth(node->left);
-        int rightDepth = maxDepth(node->right);
-        return (leftDepth > rightDepth)? leftDepth + 1 : rightDepth + 1;
-	}
-    void deleteTree(Node* leaf) {
-        if (leaf == nullptr)
-            return;
-        deleteTree(leaf->left);
-        deleteTree(leaf->right);
-        delete leaf;
-	}
+class Stack {
+	public:
+		Node* top;
+		Stack(){
+			top = nullptr;
+		}
+		~Stack() {
+			while(top != nullptr){
+				pop();
+			}
+		}
+		void push(int val) {
+			Node* node = new Node(val);
+			node->next = top;
+			top = node;
+		}
+		int pop() {
+			if (top == nullptr) {
+				cout << "Stack Underflow" << endl;
+				return -1;
+			}
+			Node* temp = top;
+			int poppedValue = top->data;
+			top = top->next;
+			delete temp;
+			return poppedValue;
+		}
+		int peek() {
+			if (top == nullptr) {
+				cout << "Stack Underflow" << endl;
+				return -1;
+			}
+			return top->data;
+		}
+		void display() {
+			Node* curr = top;
+			while (curr != nullptr) {
+				cout << curr->data << "  ";
+			}
+			cout << endl;
+		}
+};
+class Queue {
+	private:
+		int* arr;
+		int capacity;//max size
+		int frontIdx;
+		int rearIdx;
+		int currentSize;
+		void resize() {
+			int newCapacity = capacity * 2;
+			int* newArr = new int[newCapacity];
+			for (int i = 0; i < currentSize; i++) {
+				newArr[i] = arr[(frontIdx + i) % capacity];
+			}
+			delete[] arr;
+			arr = newArr;
+			capacity = newCapacity;
+			frontIdx = 0;
+			rearIdx = currentSize;
+		}
+	public:
+		Queue(int initialCapacity = 4) {
+			capacity = initialCapacity;
+			arr = new int[capacity];
+			frontIdx = 0;
+			rearIdx = 0;
+			currentSize = 0;
+		}
+		~Queue() {
+			delete[] arr;
+		}
+		bool isEmpty() const {
+			if (currentSize == 0) {
+				return true;
+			}
+			if (currentSize != 0) { // not important
+				return false;
+			}
+		}
+		int size() const {
+			return currentSize;
+		}
+		void enqueue(int value) {
+			if (currentSize == capacity) {
+				resize();
+			}
+			arr[rearIdx] = value;
+			rearIdx = (rearIdx + 1) % capacity;
+			currentSize++;
+		}
+		void dequeue() {
+			if (isEmpty()) {
+				cout << "Queue Underflow! Cannot dequeue from an empty queue.\n";
+				return;
+			}
+			frontIdx = (frontIdx + 1) % capacity;
+			currentSize--;
+		}
+		int front() const {
+			if (isEmpty()) {
+				cout << "Queue is empty. No front element.\n";
+				return -1;
+			}
+			return arr[frontIdx];
+		}
+		void print() const {
+			cout << "Queue elements: ";
+			for(int i = 0;i < currentSize;i++) {
+				int index = (frontIdx + i) % capacity;
+				cout << arr[index] << " ";
+			}
+			cout << "\n";
+		}
 };
 int main() {
-        return 0;
-    }
+	Queue q;
+	cout << "Enqueue 10, 20, 30, 40\n";
+	q.enqueue(10);
+	q.enqueue(20);
+	q.enqueue(30);
+	q.enqueue(40);
+	q.print();
+
+	cout << "Front elemet: " << q.front() << "\n";
+
+	cout << "Dequeue two elements\n";
+	q.dequeue();
+	q.dequeue();
+	q.print();
+	cout << "Front element now: " << q.front() << "\n";
+	cout << "Enqueue 50, 60, 70 (this will cause resize internally)\n";
+	q.enqueue(50);
+	q.enqueue(60);
+	q.enqueue(70);
+	q.print();
+
+	cout << "Dequeue all elements:\n";
+	while(!q.isEmpty()) {
+		cout << "Front: " << q.front() << " -> dequeued\n";
+		q.dequeue();
+	}
+	q.dequeue();
+	return 0;
+
+}
