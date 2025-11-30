@@ -155,3 +155,21 @@ int main() {
 	return 0;
 
 }
+/*Enqueue 10, 20, 30, 40
+Queue elements : 10 20 30 40
+Front elemet : 10
+Dequeue two elements
+Queue elements : 30 40
+Front element now : 30
+Enqueue 50, 60, 70 (this will cause resize internally)
+Queue elements : 30 40 50 60 70
+Dequeue all elements :
+Front: 30->dequeued
+Front : 40->dequeued
+Front : 50->dequeued
+Front : 60->dequeued
+Front : 70->dequeued
+Queue Underflow!Cannot dequeue from an empty queue.
+
+D : \Github\Data - Structures - in - Cpp\Visual Studios 2022\ConsoleApplication1\x64\Debug\ConsoleApplication1.exe(process 6628) exited with code 0 (0x0).
+Press any key to close this window . . .*/
