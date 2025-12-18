@@ -1,7 +1,7 @@
 #include<iostream>
 #include<fstream>
-#include<string>
-#include <chrono>  // For timing measurement
+#include<string> 
+#include <chrono>
 using namespace std::chrono;
 using namespace std;
 class ArrayList {
@@ -105,10 +105,10 @@ public:
 };
 
 int main() {
-	ifstream MyFile("filename.txt");
-	string line;
-    getline(MyFile,line);
-	cout << line << endl;
+    ifstream MyFile("filename.txt");
+    string line;
+    getline(MyFile, line);
+    cout << line << endl;
     int num = 0;
     //cout << "\n\n\n;";
     //cout << "int num = 0;\n";
@@ -131,22 +131,20 @@ int main() {
     }
     //list.print();
     cout << "starting bubbleSort \n";
-    //list.bubbleSort();
-    //for(int i=0;i<19;i++)
-    //list.print();
-
-	MyFile.close();
-
-
-    // Measure time
     auto start = high_resolution_clock::now();
     list.bubbleSort();
     auto stop = high_resolution_clock::now();
+    //for (int i = 0; i < 19; i++)
     list.print();
-    // Calculate duration
+    MyFile.close();
+	ofstream MyFile2("output.txt");
+    for (int i = 0; i < list.length; i++) {
+        MyFile2 << list.arr[i];
+        if (i < list.length - 1) {
+            MyFile2 << ",";
+        }
+	}
     auto duration = duration_cast<microseconds>(stop - start);
-
-    cout << "Time taken: " << duration.count() << " microseconds\n";
-    cout << "           = " << duration.count() / 1000.0 << " milliseconds\n";
-
+    cout << "Time taken: " << duration.count() << " microseconds\n";//27 seconds
+    return 0;
 }
