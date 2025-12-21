@@ -1,57 +1,56 @@
 #include<iostream>
 #include<string>
 #include<fstream>
-//off_t lseek(int fd, off_t offset, int whence);
 using namespace std;
+
 struct Node {
     int studentID;
     string studentName;
     string DepartmentCode;
     int Semester;
     double CGPA;
-    int CeditHoursCompleted;
+    int CreditHoursCompleted;
     int EnrollmentYear;
     Node* next;
+    
     Node(int s_id, string s_n, string s_d_code, int s_sems, double s_cgpa, int s_CRH, int s_en_year) {
         this->studentID = s_id;
         this->studentName = s_n;
         this->DepartmentCode = s_d_code;
-        this->Semester = Semester;
+        this->Semester = s_sems;
         this->CGPA = s_cgpa;
-        this->CeditHoursCompleted = s_CRH;
+        this->CreditHoursCompleted = s_CRH;
         this->EnrollmentYear = s_en_year;
         next = nullptr;
     }
 };
+
 class LinkedList {
 public:
     int Total_Number_of_Students;
     Node* head;
+    
 public:
     LinkedList(int t_s) {
         this->Total_Number_of_Students = t_s;
         head = nullptr;
     }
+    
     ~LinkedList() {
         while (head != nullptr) {
             deleteFromBeginning();
         }
-
-        //        Node* cur = head;
-        //        Node *temp =nullptr;
-        //        while(cur->next != nullptr){
-        //            temp = cur->next;
-        //            delete cur;
-        //            cur = temp;
-        //        }
-
     }
-    void insertAtBeginning(int s_id, string s_n, string s_d_code, int s_sems, double s_cgpa, int s_CRH, int s_en_year) {
+    
+    void insertAtBeginning(int s_id, string s_n, string s_d_code, int s_sems, 
+                          double s_cgpa, int s_CRH, int s_en_year) {
         Node* temp = new Node(s_id, s_n, s_d_code, s_sems, s_cgpa, s_CRH, s_en_year);
         temp->next = head;
         head = temp;
     }
-    void insertAtEnd(int s_id, string s_n, string s_d_code, int s_sems, double s_cgpa, int s_CRH, int s_en_year) {
+    
+    void insertAtEnd(int s_id, string s_n, string s_d_code, int s_sems, 
+                     double s_cgpa, int s_CRH, int s_en_year) {
         Node* temp = new Node(s_id, s_n, s_d_code, s_sems, s_cgpa, s_CRH, s_en_year);
         if (head == nullptr) {
             head = temp;
@@ -63,24 +62,7 @@ public:
         }
         cur->next = temp;
     }
-    void insertAtPosition(int s_id, string s_n, string s_d_code, int s_sems, double s_cgpa, int s_CRH, int s_en_year, int position) {
-        if (position == 0) {
-            insertAtBeginning(s_id, s_n, s_d_code, s_sems, s_cgpa, s_CRH, s_en_year);
-            return;
-        }
-        Node* temp = new Node(s_id, s_n, s_d_code, s_sems, s_cgpa, s_CRH, s_en_year);
-        Node* cur = head;
-        for (int i = 0; i < position - 1 && cur != nullptr; i++) {
-            cur = cur->next;
-        }
-        if (cur == nullptr) {
-            cout << "Position out of bounds. Inserting at the end." << endl;
-            insertAtEnd(s_id, s_n, s_d_code, s_sems, s_cgpa, s_CRH, s_en_year);
-            return;
-        }
-        temp->next = cur->next;
-        cur->next = temp;
-    }
+    
     bool deleteFromBeginning(int* removed = nullptr) {
         if (head == nullptr) {
             cout << "List is empty. Cannot delete." << endl;
@@ -94,6 +76,7 @@ public:
         delete temp;
         return true;
     }
+    
     void deleteFromEnd() {
         if (head == nullptr) {
             cout << "List is empty. Cannot delete." << endl;
@@ -111,80 +94,253 @@ public:
         delete cur->next;
         cur->next = nullptr;
     }
+    
     void display() {
         Node* cur = head;
         while (cur != nullptr) {
-            cout << "<" << cur->studentID << "> <" << cur->studentName << "> <" << cur->DepartmentCode << "> <" << cur->Semester << "> <" << cur->CGPA << "> <" << cur->CeditHoursCompleted << "> <" << cur->EnrollmentYear << "> " << " ->\n";
+            cout << "<" << cur->studentID << "> <" << cur->studentName << "> <" 
+                 << cur->DepartmentCode << "> <" << cur->Semester << "> <" 
+                 << cur->CGPA << "> <" << cur->CreditHoursCompleted << "> <" 
+                 << cur->EnrollmentYear << "> ->\n";
             cur = cur->next;
         }
         cout << "nullptr" << endl;
     }
-
-};
-////int arr[]={6,5,3,2,4,1}
-////int temp;
-void selectionsort(int* arr, int n) {
-    int temp, cur;
-    for (int i = 0; i < n - 1; i++) {
-        temp = arr[i];
-        cur = i;
-        for (int j = i + 1; j < n; j++) {
-            if (temp <= arr[j]) {
-                continue;
-            }
-            else {
-                temp = arr[j];
-                cur = j;
-            }
+    
+    // Helper function to count nodes
+    int countNodes() {
+        int count = 0;
+        Node* cur = head;
+        while (cur != nullptr) {
+            count++;
+            cur = cur->next;
         }
-        arr[cur] = arr[i];
-        arr[i] = temp;
+        return count;
+    }
+};
+
+// Selection sort for linked list by CGPA (descending)
+void sortByCGPA(LinkedList& list) {
+    Node* current = list.head;
+    
+    while (current != nullptr) {
+        Node* maxNode = current;
+        Node* temp = current->next;
+        
+        while (temp != nullptr) {
+            if (temp->CGPA > maxNode->CGPA) {
+                maxNode = temp;
+            }
+            temp = temp->next;
+        }
+        
+        // Swap data
+        if (maxNode != current) {
+            int tempID = current->studentID;
+            string tempName = current->studentName;
+            string tempDept = current->DepartmentCode;
+            int tempSem = current->Semester;
+            double tempCGPA = current->CGPA;
+            int tempCH = current->CreditHoursCompleted;
+            int tempYear = current->EnrollmentYear;
+            
+            current->studentID = maxNode->studentID;
+            current->studentName = maxNode->studentName;
+            current->DepartmentCode = maxNode->DepartmentCode;
+            current->Semester = maxNode->Semester;
+            current->CGPA = maxNode->CGPA;
+            current->CreditHoursCompleted = maxNode->CreditHoursCompleted;
+            current->EnrollmentYear = maxNode->EnrollmentYear;
+            
+            maxNode->studentID = tempID;
+            maxNode->studentName = tempName;
+            maxNode->DepartmentCode = tempDept;
+            maxNode->Semester = tempSem;
+            maxNode->CGPA = tempCGPA;
+            maxNode->CreditHoursCompleted = tempCH;
+            maxNode->EnrollmentYear = tempYear;
+        }
+        
+        current = current->next;
     }
 }
+
+// Selection sort for linked list by Enrollment Year
+void sortByEnrollment(LinkedList& list) {
+    Node* current = list.head;
+    
+    while (current != nullptr) {
+        Node* minNode = current;
+        Node* temp = current->next;
+        
+        while (temp != nullptr) {
+            if (temp->EnrollmentYear < minNode->EnrollmentYear ||
+                (temp->EnrollmentYear == minNode->EnrollmentYear && 
+                 temp->studentID < minNode->studentID)) {
+                minNode = temp;
+            }
+            temp = temp->next;
+        }
+        
+        // Swap data
+        if (minNode != current) {
+            int tempID = current->studentID;
+            string tempName = current->studentName;
+            string tempDept = current->DepartmentCode;
+            int tempSem = current->Semester;
+            double tempCGPA = current->CGPA;
+            int tempCH = current->CreditHoursCompleted;
+            int tempYear = current->EnrollmentYear;
+            
+            current->studentID = minNode->studentID;
+            current->studentName = minNode->studentName;
+            current->DepartmentCode = minNode->DepartmentCode;
+            current->Semester = minNode->Semester;
+            current->CGPA = minNode->CGPA;
+            current->CreditHoursCompleted = minNode->CreditHoursCompleted;
+            current->EnrollmentYear = minNode->EnrollmentYear;
+            
+            minNode->studentID = tempID;
+            minNode->studentName = tempName;
+            minNode->DepartmentCode = tempDept;
+            minNode->Semester = tempSem;
+            minNode->CGPA = tempCGPA;
+            minNode->CreditHoursCompleted = tempCH;
+            minNode->EnrollmentYear = tempYear;
+        }
+        
+        current = current->next;
+    }
+}
+
+// Function to write list to file
+void writeToFile(LinkedList& list, const string& filename) {
+    ofstream outFile(filename);
+    if (!outFile.is_open()) {
+        cerr << "Error: Cannot open " << filename << endl;
+        return;
+    }
+    
+    Node* cur = list.head;
+    while (cur != nullptr) {
+        outFile << cur->studentID << " " << cur->studentName << " " 
+                << cur->DepartmentCode << " " << cur->Semester << " " 
+                << cur->CGPA << " " << cur->CreditHoursCompleted << " " 
+                << cur->EnrollmentYear << endl;
+        cur = cur->next;
+    }
+    outFile.close();
+}
+
+// Function to create a copy of linked list
+LinkedList copyList(LinkedList& original) {
+    LinkedList copy(original.Total_Number_of_Students);
+    Node* cur = original.head;
+    
+    while (cur != nullptr) {
+        copy.insertAtEnd(cur->studentID, cur->studentName, cur->DepartmentCode,
+                         cur->Semester, cur->CGPA, cur->CreditHoursCompleted,
+                         cur->EnrollmentYear);
+        cur = cur->next;
+    }
+    return copy;
+}
+
+// Fixed your original selection sort function
+void selectionsort(LinkedList* arr) {
+    Node* current = arr->head;
+    int nodeCount = arr->countNodes();
+    
+    for (int i = 0; i < nodeCount - 1 && current != nullptr; i++) {
+        Node* minNode = current;
+        Node* compare = current->next;
+        
+        while (compare != nullptr) {
+            if (compare->studentID < minNode->studentID) {
+                minNode = compare;
+            }
+            compare = compare->next;
+        }
+        
+        // Swap data
+        if (minNode != current) {
+            // Swap all data fields
+            int tempID = current->studentID;
+            string tempName = current->studentName;
+            string tempDept = current->DepartmentCode;
+            int tempSem = current->Semester;
+            double tempCGPA = current->CGPA;
+            int tempCH = current->CreditHoursCompleted;
+            int tempYear = current->EnrollmentYear;
+            
+            current->studentID = minNode->studentID;
+            current->studentName = minNode->studentName;
+            current->DepartmentCode = minNode->DepartmentCode;
+            current->Semester = minNode->Semester;
+            current->CGPA = minNode->CGPA;
+            current->CreditHoursCompleted = minNode->CreditHoursCompleted;
+            current->EnrollmentYear = minNode->EnrollmentYear;
+            
+            minNode->studentID = tempID;
+            minNode->studentName = tempName;
+            minNode->DepartmentCode = tempDept;
+            minNode->Semester = tempSem;
+            minNode->CGPA = tempCGPA;
+            minNode->CreditHoursCompleted = tempCH;
+            minNode->EnrollmentYear = tempYear;
+        }
+        
+        current = current->next;
+    }
+}
+
 int main() {
-	//cout << "GFV"; testing my failure of a compiler
-     
-    //file opening ceremony
     ifstream scan("students_data.txt");
     if (!scan.is_open()) {
         cerr << "Error: Unable to open file!" << endl;
         return 1;
     }
-    //linkedlist scenes
-    int line;
-    scan >> line;
-    //scan.ignore();
-    LinkedList data(line);
-
-    //string test;
-    //if (!std::getline(scan, test))
-    //   cerr << "Error: Failed to read data" << endl;*
-
     
-
-    int sid, sem, ch, ey; double cgpa; string sname, dcode;
-
-    for (int i = 0; i < 2; i++) {
+    int num;
+    scan >> num;
+    const int line = num;
+    scan.ignore();
+    LinkedList data(line);
+    
+    int sid, sem, ch, ey; 
+    double cgpa; 
+    string sname, dcode;
+    
+    for (int i = 0; i < line; i++) {
         scan >> sid >> sname >> dcode >> sem >> cgpa >> ch >> ey;
         scan.ignore();
-        cout << sid << " " << sname << " " << dcode << " " << sem << " " << cgpa << " " << ch << " " << ey << endl;
+        
+        cout << "Read: " << sid << " " << sname << " " << dcode << " " 
+             << sem << " " << cgpa << " " << ch << " " << ey << endl;
+             
         data.insertAtEnd(sid, sname, dcode, sem, cgpa, ch, ey);
     }
-    //data.display();
+    
+    cout << "\nOriginal Data:\n";
     data.display();
-
-	string test,t;
-    std::getline(scan, test);
-	cout << "- " << test << endl;
-    std::getline(scan, t);
-    cout << "- " << test << endl;
-    // 
-    // 
-    //-----
-
-    //if (scan.eof())
-    //    cout << "Reached end of file." << endl;
-    //else
-    //    cerr << "Error: File reading failed!" << endl;
+    
+    // Create copies for sorting
+    LinkedList cgpaSorted = copyList(data);
+    LinkedList enrollmentSorted = copyList(data);
+    
+    // Sort by CGPA
+    sortByCGPA(cgpaSorted);
+    writeToFile(cgpaSorted, "ranked_by_cgpa.txt");
+    
+    // Sort by Enrollment
+    sortByEnrollment(enrollmentSorted);
+    writeToFile(enrollmentSorted, "sorted_by_enrollment.txt");
+    
+    // Test your selection sort
+    cout << "\nAfter sorting by student ID:\n";
+    selectionsort(&data);
+    data.display();
+    
     scan.close();
+    return 0;
 }
