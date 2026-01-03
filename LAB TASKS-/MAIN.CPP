@@ -79,16 +79,16 @@ public:
     // ---------------------------------------------------------
     // TASK 2: PARADOX (Delete)
     // ---------------------------------------------------------
-    bool isLeaf(Node* n) {
+    bool isLeaf(TimeCapsule* n) {
         return (n->right == nullptr && n->left == nullptr);
     }
-    bool hasRightChild(Node* n) {
+    bool hasRightChild(TimeCapsule* n) {
         return (n->left == nullptr);
     }
-    bool hasLeftChild(Node* n) {
+    bool hasLeftChild(TimeCapsule* n) {
         return (n->right == nullptr);
     }
-    Node* resolveParadoxHelper(Node* root=nullptr,int year, Node* parent=nullptr) {
+    TimeCapsule* resolveParadoxHelper(TimeCapsule* root=nullptr,int year, TimeCapsule* parent=nullptr) {
         if (root == nullptr) {
             cout << "> System: [NOT IMPLEMENTED] Cannot remove year." << endl; // Remove this line
             return;
@@ -100,7 +100,7 @@ public:
             resolveParadoxHelper(root->right,year,root);
         }
         else {
-            if (root->isleaf()) {
+            if (isLeaf(root)) {
                 delete root;
                 if (parent->left == root) {
                     parent->left = nullptr;
@@ -109,8 +109,8 @@ public:
                     parent->right = nullptr;
                 }
             }
-            else if (root->hasLeftChild()) {
-                Node* child = root->left;
+            else if (hasLeftChild(root)) {
+                TimeCapsule* child = root->left;
                 delete root;
                 if (parent->left == root) {
                     parent->left = child;
@@ -121,8 +121,8 @@ public:
                 }
 
             }
-            else if (root->hasRightChild()) {
-                Node* child = root->right;
+            else if (hasRightChild(root)) {
+                TimeCapsule* child = root->right;
                 delete root;
                 if (parent->left == root) {
                     parent->left = child;
@@ -134,14 +134,14 @@ public:
             }
             else {
                 //two children
-                Node* descendant = root->right;
-                Node* descendantParent = root;
+                TimeCapsule* descendant = root->right;
+                TimeCapsule* descendantParent = root;
                 while (descendant->left != nullptr) {
                     descendantParent = descendant;
                     descendant = descendant->left;
                 }//found inorder successor
-                Node* successor = root->left;
-                Node successorParent = root;
+                TimeCapsule* successor = root->left;
+                TimeCapsule* successorParent = root;
                 while (successor->right != nullptr) {
                     successorParent = successor;
                     successor = successor->right;
