@@ -30,8 +30,8 @@ void selectionSort(int arr[], int size)
 void merge(int arr[], int l, int m, int r)
 {
     int i, j, k;
-    int n1 = m - l + 1;
-    int n2 = r - m;
+    const int n1 = m - l + 1;
+    const int n2 = r - m;
 
     int L[n1], R[n2];
 
@@ -103,7 +103,7 @@ int main(int argc, char** argv) {
 //	int l=0;
 //	int r=8;
 //	int mid =(l+r)/2;
-	int size = 9;
+	const int size = 9;
 	int arr[size]={9,8,7,10,5,4,3,2,1};
 	print(arr,9);
 
