@@ -568,6 +568,9 @@ int main() {
             if (ss >> file) arena.loadFromFile(file);
             else cout << RED << "Usage: LOAD <filename.txt>" << RESET << "\n";
         }
+        else if (cmd == "hi" || cmd == "load") {//
+			cout << RED << "Hello Bro" << RESET << "\n";
+        }
         else {
             cout << RED << "Unknown command: '" << cmd << "'" << RESET << "\n";
             cout << "Type 'HELP' for commands.\n";
