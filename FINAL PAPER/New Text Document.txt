@@ -1,0 +1,428 @@
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+// ==========================================
+// 1. PLAYER STRUCTURE (NODE)
+// ==========================================
+struct Player {
+    int rating;
+    string name;
+    int hp;
+    Player *left;
+    Player *right;
+    Player *parent;
+
+    Player(int r, string n, int h) {
+        rating = r;
+        name = n;
+        hp = h;
+        left = nullptr;
+        right = nullptr;
+        parent = nullptr;
+    }
+};
+
+// ==========================================
+// 2. ARENA LOGIC (BST OPERATIONS)
+// ==========================================
+class Arena {
+public:
+    Player* root;
+    int total_players;
+
+    Arena() {
+        root = nullptr;
+        total_players = 0;
+    }
+
+    // Helper: Search
+    Player* search(Player* current, int r) {
+        while (current != nullptr && current->rating != r) {
+            if (r < current->rating) {
+                current = current->left;
+            } else {
+                current = current->right;
+            }
+        }
+        return current;
+    }
+
+    // 1. JOIN
+    void join(int r, string n, int h) {
+        if (search(root, r) != nullptr) {
+            cout << "DUPLICATE" << endl;
+            return;
+        }
+
+        Player* newNode = new Player(r, n, h);
+
+        if (root == nullptr) {
+            root = newNode;
+        } else {
+            Player* curr = root;
+            Player* p = nullptr;
+
+            while (curr != nullptr) {
+                p = curr;
+                if (r < curr->rating) {
+                    curr = curr->left;
+                } else {
+                    curr = curr->right;
+                }
+            }
+
+            newNode->parent = p;
+
+            if (r < p->rating) {
+                p->left = newNode;
+            } else {
+                p->right = newNode;
+            }
+        }
+
+        total_players = total_players + 1;
+        cout << "JOINED" << endl;
+    }
+
+    // Helper: Transplant
+    void transplant(Player* u, Player* v) {
+        if (u->parent == nullptr) {
+            root = v;
+        } else if (u == u->parent->left) {
+            u->parent->left = v;
+        } else {
+            u->parent->right = v;
+        }
+
+        if (v != nullptr) {
+            v->parent = u->parent;
+        }
+    }
+
+    // 2. LEAVE
+    void leave(int r) {
+        Player* z = search(root, r);
+
+        if (z == nullptr) {
+            cout << "NOT FOUND" << endl;
+            return;
+        }
+
+        if (z->left == nullptr) {
+            transplant(z, z->right);
+        } else if (z->right == nullptr) {
+            transplant(z, z->left);
+        } else {
+            Player* y = z->right;
+            while (y->left != nullptr) {
+                y = y->left;
+            }
+
+            if (y->parent != z) {
+                transplant(y, y->right);
+                y->right = z->right;
+                y->right->parent = y;
+            }
+
+            transplant(z, y);
+            y->left = z->left;
+            y->left->parent = y;
+        }
+
+        delete z;
+        total_players = total_players - 1;
+        cout << "LEFT" << endl;
+    }
+
+    // 6. MATCH
+    void match(int x) {
+        if (root == nullptr) {
+            cout << "EMPTY" << endl;
+            return;
+        }
+
+        Player* p = nullptr;
+        Player* s = nullptr;
+        Player* curr = root;
+
+        while (curr != nullptr) {
+            if (curr->rating < x) {
+                p = curr;
+                curr = curr->right;
+            } else if (curr->rating > x) {
+                s = curr;
+                curr = curr->left;
+            } else {
+                p = s = curr;
+                break;
+            }
+        }
+
+        if (p == nullptr && s == nullptr) {
+            cout << "EMPTY" << endl;
+        } else if (p == nullptr) {
+            cout << s->rating << " " << s->name << " " << s->hp << endl;
+        } else if (s == nullptr) {
+            cout << p->rating << " " << p->name << " " << p->hp << endl;
+        } else {
+            int d1 = x - p->rating;
+            int d2 = s->rating - x;
+            if (d1 <= d2) {
+                cout << p->rating << " " << p->name << " " << p->hp << endl;
+            } else {
+                cout << s->rating << " " << s->name << " " << s->hp << endl;
+            }
+        }
+    }
+
+    // 9. RANGE
+    void range(Player* n, int l, int r, bool &found) {
+        if (n == nullptr) {
+            return;
+        }
+
+        if (n->rating > l) {
+            range(n->left, l, r, found);
+        }
+
+        if (n->rating >= l && n->rating <= r) {
+            cout << n->rating << " " << n->name << " " << n->hp << endl;
+            found = true;
+        }
+
+        if (n->rating < r) {
+            range(n->right, l, r, found);
+        }
+    }
+
+    // 10. RANK
+    int getRank(Player* n, int x) {
+        if (n == nullptr) {
+            return 0;
+        }
+
+        if (n->rating < x) {
+            return 1 + getRank(n->left, x) + getRank(n->right, x);
+        } else {
+            return getRank(n->left, x);
+        }
+    }
+
+    // 11. KTH
+    Player* getKth(Player* n, int k, int &counter) {
+        if (n == nullptr) {
+            return nullptr;
+        }
+
+        Player* L = getKth(n->left, k, counter);
+        if (L != nullptr) {
+            return L;
+        }
+
+        counter = counter + 1;
+        if (counter == k) {
+            return n;
+        }
+
+        return getKth(n->right, k, counter);
+    }
+
+    // 12. DUEL
+    void duel(int a, int b) {
+        Player* u = search(root, a);
+        Player* v = search(root, b);
+
+        if (u == nullptr || v == nullptr) {
+            cout << "NOT FOUND" << endl;
+            return;
+        }
+
+        Player* lca = root;
+        while (lca != nullptr) {
+            if (a < lca->rating && b < lca->rating) {
+                lca = lca->left;
+            } else if (a > lca->rating && b > lca->rating) {
+                lca = lca->right;
+            } else {
+                break;
+            }
+        }
+
+        int dist = 0;
+        Player* temp = lca;
+        while (temp->rating != a) {
+            if (a < temp->rating) temp = temp->left;
+            else temp = temp->right;
+            dist = dist + 1;
+        }
+
+        temp = lca;
+        while (temp->rating != b) {
+            if (b < temp->rating) temp = temp->left;
+            else temp = temp->right;
+            dist = dist + 1;
+        }
+
+        cout << "DIST " << dist << endl;
+    }
+
+    // 13. STATS
+    int height(Player* n) {
+        if (n == nullptr) {
+            return -1;
+        }
+        int lh = height(n->left);
+        int rh = height(n->right);
+        if (lh > rh) return 1 + lh;
+        else return 1 + rh;
+    }
+
+    int leaves(Player* n) {
+        if (n == nullptr) {
+            return 0;
+        }
+        if (n->left == nullptr && n->right == nullptr) {
+            return 1;
+        }
+        return leaves(n->left) + leaves(n->right);
+    }
+};
+
+// ==========================================
+// 3. MAIN (PROCESSOR)
+// ==========================================
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    Arena arena;
+    int Q;
+    cin >> Q;
+
+    while (Q > 0) {
+        string cmd;
+        cin >> cmd;
+
+        if (cmd == "JOIN") {
+            int r, h;
+            string n;
+            cin >> r >> n >> h;
+            arena.join(r, n, h);
+        } else if (cmd == "LEAVE") {
+            int r;
+            cin >> r;
+            arena.leave(r);
+        } else if (cmd == "STATUS") {
+            int r;
+            cin >> r;
+            Player* p = arena.search(arena.root, r);
+            if (p == nullptr) {
+                cout << "NOT FOUND" << endl;
+            } else {
+                cout << p->rating << " " << p->name << " " << p->hp << endl;
+            }
+        } else if (cmd == "DAMAGE") {
+            int r, amt;
+            cin >> r >> amt;
+            Player* p = arena.search(arena.root, r);
+            if (p == nullptr) {
+                cout << "NOT FOUND" << endl;
+            } else {
+                p->hp = p->hp - amt;
+                if (p->hp < 0) p->hp = 0;
+                cout << "DAMAGED " << p->hp << endl;
+            }
+        } else if (cmd == "HEAL") {
+            int r, amt;
+            cin >> r >> amt;
+            Player* p = arena.search(arena.root, r);
+            if (p == nullptr) {
+                cout << "NOT FOUND" << endl;
+            } else {
+                p->hp = p->hp + amt;
+                cout << "HEALED " << p->hp << endl;
+            }
+        } else if (cmd == "MATCH") {
+            int x;
+            cin >> x;
+            arena.match(x);
+        } else if (cmd == "NEXT") {
+            int x;
+            cin >> x;
+            Player* curr = arena.root;
+            Player* res = nullptr;
+            while (curr != nullptr) {
+                if (curr->rating > x) {
+                    res = curr;
+                    curr = curr->left;
+                } else {
+                    curr = curr->right;
+                }
+            }
+            if (res == nullptr) cout << "NONE" << endl;
+            else cout << res->rating << " " << res->name << " " << res->hp << endl;
+        } else if (cmd == "PREV") {
+            int x;
+            cin >> x;
+            Player* curr = arena.root;
+            Player* res = nullptr;
+            while (curr != nullptr) {
+                if (curr->rating < x) {
+                    res = curr;
+                    curr = curr->right;
+                } else {
+                    curr = curr->left;
+                }
+            }
+            if (res == nullptr) cout << "NONE" << endl;
+            else cout << res->rating << " " << res->name << " " << res->hp << endl;
+        } else if (cmd == "RANGE") {
+            int l, r;
+            cin >> l >> r;
+            bool found = false;
+            arena.range(arena.root, l, r, found);
+            if (found == false) {
+                cout << "EMPTY" << endl;
+            }
+        } else if (cmd == "RANK") {
+            int x;
+            cin >> x;
+            cout << arena.getRank(arena.root, x) << endl;
+        } else if (cmd == "KTH") {
+            int k;
+            cin >> k;
+            int counter = 0;
+            if (k < 1 || k > arena.total_players) {
+                cout << "OUT OF RANGE" << endl;
+            } else {
+                Player* res = arena.getKth(arena.root, k, counter);
+                cout << res->rating << " " << res->name << " " << res->hp << endl;
+            }
+        } else if (cmd == "DUEL") {
+            int a, b;
+            cin >> a >> b;
+            arena.duel(a, b);
+        } else if (cmd == "STATS") {
+            cout << "PLAYERS " << arena.total_players << endl;
+            if (arena.root == nullptr) {
+                cout << "MIN NONE" << endl;
+                cout << "MAX NONE" << endl;
+                cout << "HEIGHT -1" << endl;
+                cout << "LEAVES 0" << endl;
+            } else {
+                Player* mn = arena.root;
+                while (mn->left != nullptr) mn = mn->left;
+                Player* mx = arena.root;
+                while (mx->right != nullptr) mx = mx->right;
+                cout << "MIN " << mn->rating << endl;
+                cout << "MAX " << mx->rating << endl;
+                cout << "HEIGHT " << arena.height(arena.root) << endl;
+                cout << "LEAVES " << arena.leaves(arena.root) << endl;
+            }
+        }
+        Q = Q - 1;
+    }
+    return 0;
+}
