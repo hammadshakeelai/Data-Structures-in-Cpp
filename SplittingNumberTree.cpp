@@ -1,7 +1,7 @@
 #include<iostream>
 using namespace std;// piece of gold by hammad literally full OG
 //goated
-void SplitTree(int number){
+void SplitTree_(int number){
 	if (number<=0){//base case 1 or 0 so no recursive
 		return;
 	}
@@ -12,7 +12,7 @@ void SplitTree(int number){
 //		cout<<"   "<<number<<endl;
 //		cout<<"  / \\"<<endl;
 //		cout<<" "<<1<<"  ";
-		SplitTree(number-1);//call recursive with even part 
+		SplitTree_(number-1);//call recursive with even part 
 	}
 	else if(number%2==0){
 		if (number/2==0)
@@ -22,21 +22,19 @@ void SplitTree(int number){
 //		cout<<"    / \\"<<endl;
 //		cout<<"    "<<number/2<<" "<<number/2<<endl;	
 		if (number>1){
-			SplitTree(number/2);
-			SplitTree(number/2);
+			SplitTree_(number/2);
+			SplitTree_(number/2);
 		}
 	} 
 }
-void SplitTree_(int number){
+void SplitTree(int number){
     cout << "[]" << number << "[]" << endl;
-    SplitTree(number);
+    SplitTree_(number);
 }
-
 int main(){
     int n;
     cout<<"enter num: ";
     cin >> n;
-	SplitTree_(n);
-	
+	SplitTree(n);
 	return 0;
 }
