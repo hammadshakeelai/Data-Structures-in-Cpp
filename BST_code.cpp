@@ -118,6 +118,7 @@ class BST {
             else {
                 int lDepth = maxDepth(node->left);
                 int rDepth = maxDepth(node->right);
+                // return max(lDepth,rDepth)+1; 
                 if (lDepth > rDepth) {
                     return (lDepth + 1);
                 }
