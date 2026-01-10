@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arena of Ratings: Ultimate Edition Poster</title>
+    <style>
+        /* --- CSS VARIABLES & RESET --- */
+        :root {
+            --bg-color: #050a14;
+            --card-bg: #0a1525;
+            --primary-blue: #00bcd4; /* Cyan/Neon Blue */
+            --secondary-blue: #0d47a1;
+            --text-color: #e0f7fa;
+            --muted-text: #81d4fa;
+            --accent-green: #00e676;
+            --accent-red: #ff5252;
+            --border-color: #00bcd4;
+            --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            --font-code: 'Courier New', Courier, monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-main);
+            line-height: 1.6;
+            /* Subtle grid background for blueprint feel */
+            background-image: 
+                linear-gradient(rgba(0, 188, 212, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 188, 212, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+            padding: 20px;
+            width: 100%;
+            min-height: 100vh;
+        }
+
+        /* --- LAYOUT CONTAINER --- */
+        .poster-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(5, 10, 20, 0.95);
+            border: 2px solid var(--border-color);
+            box-shadow: 0 0 30px rgba(0, 188, 212, 0.2);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- HEADER SECTION --- */
+        header {
+            background: linear-gradient(90deg, var(--secondary-blue), #000);
+            border-bottom: 4px solid var(--primary-blue);
+            padding: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .header-text h1 {
+            font-size: 2.5rem;
+            text-transform: uppercase;
+            color: var(--primary-blue);
+            text-shadow: 0 0 10px var(--primary-blue);
+            margin-bottom: 5px;
+        }
+
+        .header-text h2 {
+            font-size: 1.2rem;
+            color: var(--muted-text);
+            font-weight: 400;
+        }
+
+        .logo-area {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            text-align: right;
+        }
+
+        .logo-area img {
+            height: 80px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .author-info {
+            font-size: 0.9rem;
+            color: var(--text-color);
+            margin-top: 5px;
+        }
+
+        /* --- MAIN GRID LAYOUT --- */
+        .main-content {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            padding: 30px;
+        }
+
+        /* --- SECTIONS & BOXES --- */
+        .column {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .box {
+            background: var(--card-bg);
+            border: 1px solid var(--primary-blue);
+            border-radius: 8px;
+            padding: 20px;
+            position: relative;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .box-title {
+            background: var(--secondary-blue);
+            color: white;
+            padding: 8px 15px;
+            margin: -20px -20px 20px -20px;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .box-title::before {
+            content: '';
+            display: block;
+            width: 10px;
+            height: 10px;
+            background: var(--primary-blue);
+            border-radius: 50%;
+            box-shadow: 0 0 5px var(--primary-blue);
+        }
+
+        p, li {
+            font-size: 0.95rem;
+            color: #d1d5db;
+            margin-bottom: 10px;
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+
+        /* --- VISUAL ELEMENTS --- */
+        .visual-placeholder {
+            width: 100%;
+            height: 250px;
+            background: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 1px dashed var(--muted-text);
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        .visual-placeholder img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.9;
+        }
+
+        .centerpiece-img {
+            border: 2px solid var(--primary-blue);
+            box-shadow: 0 0 15px rgba(0, 188, 212, 0.4);
+        }
+
+        /* --- CODE BLOCK STYLING --- */
+        .code-block {
+            background: #080808;
+            border-left: 4px solid var(--accent-green);
+            padding: 15px;
+            font-family: var(--font-code);
+            font-size: 0.85rem;
+            color: #ccc;
+            overflow-x: auto;
+            white-space: pre-wrap;
+        }
+
+        .kw { color: #569cd6; } /* Keyword */
+        .type { color: #4ec9b0; } /* Type */
+        .var { color: #9cdcfe; } /* Variable */
+        .str { color: #ce9178; } /* String */
+        .num { color: #b5cea8; } /* Number */
+        .comment { color: #6a9955; font-style: italic; } /* Comment */
+
+        /* --- COMMAND LIST STYLING --- */
+        .cmd-list li {
+            list-style-type: none;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding: 5px 0;
+            display: flex;
+            justify-content: space-between;
+        }
+        .cmd-name {
+            color: var(--primary-blue);
+            font-weight: bold;
+            font-family: var(--font-code);
+        }
+        .cmd-desc {
+            color: var(--muted-text);
+            font-size: 0.85rem;
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            text-align: center;
+            padding: 20px;
+            border-top: 1px solid var(--primary-blue);
+            font-size: 0.8rem;
+            color: var(--muted-text);
+        }
+    </style>
+</head>
+<body>
+
+<div class="poster-container">
+    
+    <!-- HEADER -->
+    <header>
+        <div class="header-text">
+            <h1>Arena of Ratings: <span style="color:white">Ultimate Edition</span></h1>
+            <h2>Real-Time Matchmaking Engine with Persistent Data & Visual CLI</h2>
+        </div>
+        <div class="logo-area">
+            <!-- Provided Logo Image -->
+            <img src="https://z-cdn-media.chatglm.cn/files/eb409c96-ac0c-41cc-9be9-300ad42d662a.png?auth_key=1868055522-4bddbcdfb03748a7a57cfc15b48e47bb-0-bfab5b0d0c81121de1fe9371473ce542" alt="IMSciences Logo">
+            <div class="author-info">
+                <strong>Muhammad Hammad Shakeel</strong><br>
+                BS Artificial Intelligence | IMSciences
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN 3-COLUMN CONTENT -->
+    <div class="main-content">
+
+        <!-- COLUMN 1: THE ENGINE -->
+        <div class="column">
+            <!-- Box 1.1: Introduction -->
+            <div class="box">
+                <div class="box-title">1. The Engine: Introduction</div>
+                <p>
+                    The <strong>Arena of Ratings (Ultimate)</strong> is a sophisticated matchmaking engine designed for competitive gaming. Unlike standard lists, it uses a <strong>Binary Search Tree (BST)</strong> with subtree sizing to ensure <strong>O(h)</strong> efficiency.
+                </p>
+                <p style="margin-top:10px; border-top:1px dashed #444; padding-top:10px;">
+                    <span style="color:var(--accent-green)">New in Ultimate Edition:</span><br>
+                    • <strong>Persistent Storage:</strong> Save/Load player data to files.<br>
+                    • <strong>Visual Interface:</strong> Color-coded CLI with tree topology.<br>
+                    • <strong>Smart Metrics:</strong> Real-time Duel Distance calculation.
+                </p>
+            </div>
+
+            <!-- Box 1.2: Core Data Structure -->
+            <div class="box">
+                <div class="box-title">2. Core Data Structure</div>
+                <p>The system is built on a custom Node structure handling both game data and structural balancing metrics:</p>
+                <div class="code-block">
+<span class="kw">struct</span> <span class="type">Node</span> {
+    <span class="type">int</span> <span class="var">rating</span>;      <span class="comment">// The Key (Ordered)</span>
+    <span class="type">string</span> <span class="var">name</span>;     <span class="comment">// Player ID</span>
+    <span class="type">long long</span> <span class="var">hp</span>;    <span class="comment">// Dynamic Health</span>
+    <span class="type">int</span> <span class="var">sz</span>;          <span class="comment">// Subtree Size (Ranking)</span>
+    <span class="type">Node</span> *<span class="var">left</span>, *<span class="var">right</span>;
+};</div>
+                <p style="font-size:0.85rem; margin-top:5px;">
+                    <strong>Rating:</strong> Determines tree position.<br>
+                    <strong>Subtree Size (sz):</strong> Enables finding the "K-th" best player in milliseconds.
+                </p>
+            </div>
+        </div>
+
+        <!-- COLUMN 2: VISUALIZATION (CENTER) -->
+        <div class="column">
+            <!-- Box 2.1: Main Visual -->
+            <div class="box">
+                <div class="box-title">3. Main Visual: Deterministic Treap</div>
+                <div class="visual-placeholder">
+                    <!-- Using the Treap Diagram provided in the prompt as the main visual -->
+                    <img class="centerpiece-img" src="https://z-cdn-media.chatglm.cn/files/fc1afd42-2132-4e3c-9054-fd23c2296a77.png?auth_key=1868055522-a686755ed14e4a9b899584da02eea808-0-357430cc24027f6e095472d26206ce2c" alt="Deterministic Treap System Diagram">
+                </div>
+                <p style="text-align: center; font-size: 0.9rem; color: var(--primary-blue);">
+                    <em>"A glowing cybernetic Binary Search Tree on a dark blue background."</em>
+                </p>
+            </div>
+
+            <!-- Box 2.2: Algorithmic Logic -->
+            <div class="box">
+                <div class="box-title">4. Algorithmic Logic</div>
+                <p><strong>Recursive Efficiency:</strong> All major operations use recursion to traverse the tree efficiently.</p>
+                <ul style="list-style: square; margin-left: 20px; font-size: 0.9rem;">
+                    <li><span class="kw">_insert()</span>: Adds players while updating subtree sizes.</li>
+                    <li><span class="kw">_duel()</span>: Calculates distance using Lowest Common Ancestor (LCA).</li>
+                    <li><span class="kw">_printDirectoryStyle()</span>: Custom recursive function drawing the tree sideways in the terminal for debugging.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- COLUMN 3: FEATURES & RESULTS -->
+        <div class="column">
+            <!-- Box 3.1: Supported Commands -->
+            <div class="box">
+                <div class="box-title">5. Supported Commands</div>
+                <p>The engine supports a robust Command Line Interface (CLI):</p>
+                <ul class="cmd-list" style="padding:0; margin-top:10px;">
+                    <li><span class="cmd-name">JOIN / LEAVE</span> <span class="cmd-desc">Dynamic player mgmt</span></li>
+                    <li><span class="cmd-name">MATCH &lt;X&gt;</span> <span class="cmd-desc">Finds nearest rated opponent</span></li>
+                    <li><span class="cmd-name">DUEL &lt;A&gt; &lt;B&gt;</span> <span class="cmd-desc">Calculates graph distance</span></li>
+                    <li><span class="cmd-name">SAVE / LOAD</span> <span class="cmd-desc">Persist state to .txt</span></li>
+                    <li><span class="cmd-name">VISUAL</span> <span class="cmd-desc">Draw Tree topology</span></li>
+                    <li><span class="cmd-name">STATS</span> <span class="cmd-desc">Diagnostics & Metrics</span></li>
+                </ul>
+            </div>
+
+            <!-- Box 3.2: Performance -->
+            <div class="box">
+                <div class="box-title">6. Performance Metrics</div>
+                <ul style="margin-left: 15px;">
+                    <li><strong>Time Complexity:</strong> O(h) for Search, Insert, Delete.</li>
+                    <li><strong>Space Complexity:</strong> O(N) space efficiency.</li>
+                    <li><strong>Real-Time Feedback:</strong> Uses ANSI color codes (\033[32m) for immediate visual feedback (Green for Success, Red for Errors).</li>
+                </ul>
+            </div>
+
+            <!-- Box 3.3: Conclusion -->
+            <div class="box" style="border-color: var(--accent-green);">
+                <div class="box-title" style="background: rgba(0, 230, 118, 0.2);">7. Conclusion</div>
+                <p>
+                    The <strong>Ultimate Edition</strong> transforms a standard BST into a production-ready engine. By integrating file persistence and visual diagnostics, it bridges the gap between theoretical data structures and real-world software application.
+                </p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <p>Data Structures Lab – Final Exam Project | BS Artificial Intelligence | 1/10/2026</p>
+        <p style="opacity: 0.6; font-size: 0.7rem; margin-top: 5px;">Generated for Academic Showcase</p>
+    </footer>
+
+</div>
+
+</body>
+</html>
