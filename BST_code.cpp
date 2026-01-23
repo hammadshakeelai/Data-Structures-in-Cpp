@@ -272,7 +272,15 @@ int main()
 {
 
     BST tree;
-
+    tree.insert(10);
+    tree.insert(5);
+    tree.insert(15);
+    tree.insert(12);
+    tree.insert(17);
+    tree.insert(3);
+    tree.insert(7);
+    tree.inOrder();
+/*
     // Test the tree
     tree.insert(50);
     tree.insert(30);
@@ -308,6 +316,6 @@ int main()
     cout << "Deleting 50 (two children): ";
     tree.deleteNode(50);
     tree.inOrder();
-
+*/
     return 0;
 }
